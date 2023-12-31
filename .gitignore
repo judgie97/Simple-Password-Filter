@@ -1,0 +1,13 @@
+*
+!*/
+
+build/
+cmake-build-release/
+.vs/
+.idea/
+.vscode/
+
+!*.cpp
+!*.md
+!CMakeLists.txt
+!.gitignore

@@ -15,7 +15,7 @@ msbuild PasswordFilter.sln /p:Configuration=Release /p:Platform=x64
 ## Installation
 * Copy the DLL from the build/Release/x64 folder to C:\Windows\System32
 * Update registry key `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa` Add `PasswordFilter` to the REG_MULTI_SZ `Notification Packages` 
-* Create a file `C:\Windows\PasswordFilter.txt` with forbidden words listed in lowercase 1 per line
+* Create a file `C:\Windows\PasswordFilter.txt` with forbidden words, not case-sensitive.
 * Restart server
 
 See the [Microsoft documentation](https://learn.microsoft.com/en-us/windows/win32/secmgmt/installing-and-registering-a-password-filter-dll) on installing password filters for more details

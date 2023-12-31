@@ -2,21 +2,15 @@
 #define WINVER _WIN32_WINNT_WIN10
 
 #include <Windows.h>
-#include <iostream>
 #include <winternl.h>
 #include <ntstatus.h>
 #include <vector>
 #include <fstream>
 #include <string>
+#include <cwctype>
+#include <algorithm>
 
 #define MAX_ITERATIONS 10000
-
-extern "C" __declspec(dllexport) BOOLEAN __stdcall
-PasswordFilter(PUNICODE_STRING AccountName, PUNICODE_STRING FullName, PUNICODE_STRING Password, BOOLEAN SetOperation);
-
-extern "C" __declspec(dllexport) BOOLEAN __stdcall InitializeChangeNotify();
-
-extern "C" __declspec(dllexport) NTSTATUS __stdcall PasswordChangeNotify(PUNICODE_STRING UserName, ULONG RelativeId, PUNICODE_STRING NewPassword);
 
 bool StringContainsSubstring(PUNICODE_STRING str, PUNICODE_STRING substr);
 
@@ -33,13 +27,16 @@ extern "C" __declspec(dllexport) BOOLEAN __stdcall InitializeChangeNotify() {
     int index = 0;
 
     while (std::getline(file, line) && index < MAX_ITERATIONS) {
-        PUNICODE_STRING string = new UNICODE_STRING;
+        std::transform(line.begin(), line.end(), line.begin(), std::towlower);
+
+        auto string = new UNICODE_STRING;
         string->Length = line.length();
         string->MaximumLength = string->Length + 1;
         string->Buffer = new wchar_t[string->MaximumLength + 1];
         string->Buffer[string->MaximumLength] = L'\0';
         wcsncpy_s(string->Buffer, string->MaximumLength + 1, line.c_str(), line.length());
         forbiddenWords.push_back(string);
+        index++;
     }
 
     return TRUE;
@@ -60,7 +57,8 @@ PasswordFilter(PUNICODE_STRING AccountName, PUNICODE_STRING FullName, PUNICODE_S
     return match ? FALSE : TRUE;
 }
 
-extern "C" __declspec(dllexport) NTSTATUS __stdcall PasswordChangeNotify(PUNICODE_STRING UserName, ULONG RelativeId, PUNICODE_STRING NewPassword) {
+extern "C" __declspec(dllexport) NTSTATUS __stdcall
+PasswordChangeNotify(PUNICODE_STRING UserName, ULONG RelativeId, PUNICODE_STRING NewPassword) {
     return STATUS_SUCCESS;
 }
 
