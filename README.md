@@ -21,4 +21,4 @@ msbuild PasswordFilter.sln /p:Configuration=Release /p:Platform=x64
 See the [Microsoft documentation](https://learn.microsoft.com/en-us/windows/win32/secmgmt/installing-and-registering-a-password-filter-dll) on installing password filters for more details
 
 ## Compatibility
-This was tested on a Windows Server 2022 domain controller. Likely it would work with older versions of Windows Server if an older Windows SDK is installed.
+This was tested on Windows Server 2022 and 2019 domain controllers. The dll was compiled on the target operating system, caused crashes when compiled on a different version of windows. Also requires that the MSVC Redist 2015-2019 be installed on the domain controller.
